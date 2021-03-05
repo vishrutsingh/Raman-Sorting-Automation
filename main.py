@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 from scipy import signal
 from scipy.signal import butter
 from sklearn.preprocessing import MinMaxScaler
-from input_buffer import input_buffer
+import input_buffer as buffer
 from datetime import datetime
-#from stream_data import update_data
 
 
 
@@ -23,8 +22,6 @@ if __name__ == "__main__":
     df.drop([50000, 100001], inplace=True)
     df = df.apply(pd.to_numeric)
 
-    buffer = input_buffer(buff_len)
-
     plt.ion()
     fig, ax = plt.subplots()
     index = 0
@@ -35,19 +32,20 @@ if __name__ == "__main__":
         df.drop([0], inplace=True)
         df.reset_index(inplace=True, drop=True)
 
-        buffer.add_data(input_a, input_b)
-        #buffer.max_scale()
-        filt_buffer = buffer.filter_data(fs, cutoff_low, cutoff_high)
-        end = datetime.now()
-        print((start - end))
+        buffer.add_data(input_a, input_b, normalize=True)
+        buffer.filter_data(fs, cutoff_low, cutoff_high)
 
-        #ax.clear()
-        #ax.set_ylim(0, 1)
-        #filt_buffer.signal_1.plot(ax=ax,  style='r-')
 
-        #filt_buffer.signal_2.plot(ax=ax,  style='b-')
-        #plt.draw()
-        #plt.pause(0.001)
+        ax.clear()
+        #ax.set_ylim(0,1)
+        buffer.buff.filtered_signal_1.plot(ax=ax,  style='r-')
+        buffer.buff.filtered_signal_2.plot(ax=ax,  style='b-')
+        plt.draw()
+        plt.pause(0.001)
+
+
+        #end = datetime.now()
+        #print((start - end))
 
 
 
