@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy import signal
 
-class buff():
+class input_buffer():
     '''
     A time reversed FIFO Buffer. Input data is always added in forward time.
     Contains function for data manipulation e.g. Normalization, Filtering, Saving, etc.
@@ -16,7 +16,11 @@ class buff():
                                   self.signal_2 : np.zeros(buff_len)},
                                  index=np.arange(buff_len),
                                  columns=[self.signal_1, self.signal_2])
-        self.index = 0      #insert index
+        self.index = 0      #insert indexv
+        self.global_max = pd.DataFrame([{self.signal_1: 0, self.signal_2: 0}])
+
+    def set_buffer(self, in_buffer):
+        self.buffer = in_buffer
 
     def add_data(self, input_1, input_2):
         '''
@@ -63,5 +67,14 @@ class buff():
         filt_buff = pd.DataFrame({self.signal_1 : zb1,
                                   self.signal_2 : zb2},
                                  columns=self.buff.columns)
-
+#
         return filt_buff
+
+    def max_scale(self):
+        if self.buff[self.signal_1].max() > self.global_max.loc[0, self.signal_1]:
+            self.global_max.loc[0, self.signal_1] = self.buff[self.signal_1].max()
+        if self.buff[self.signal_2].max() > self.global_max.loc[0, self.signal_2]:
+            self.global_max.loc[0, self.signal_2] = self.buff[self.signal_2].max()
+
+        self.buff = self.buff/self.global_max
+
