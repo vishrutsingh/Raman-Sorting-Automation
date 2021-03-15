@@ -1,54 +1,53 @@
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
+from plotly.subplots import make_subplots
+import pandas as pd
+import tables
+
+def update_data():
+    return pd.read_hdf('data/store.h5', 'df', mode='r')
 
 
 
 app = dash.Dash(__name__, update_title=None)
-app.layout = html.Div([
+app.layout = html.Div(
     html.Div([
         html.H2('RAMAN Data',
-                style={'float': 'left',
-                       }),
-        ]),
-    html.Div(children=html.Div(id='graphs'), className='row'),
-    dcc.Interval(
-        id='graph-update',
-        interval=1),
-    ], className="container",style={'width':'98%','margin-left':10,'margin-right':10,'max-width':50000})
+            style={'float': 'left',
+            }),
+        dcc.Graph(id='live-update-graphs', figure='figure'),
+        dcc.Interval(
+            id='interval-component',
+            interval=1000,
+            n_intervals=0),
+    ])
+)
 
 
 @app.callback(
-    dash.dependencies.Output('graphs', 'children'),
-    [dash.dependencies.Input('graph-update', 'interval')]
-    )
-def update_graph(input_buffer):
-    graphs = []
-    for fields in input_buffer.columns():
+dash.dependencies.Output('live-update-graphs', 'figure'),
+[dash.dependencies.Input('interval-component', 'n_intervals')],
+)
+def update_graph(n):
+    data = update_data()
+    fig = make_subplots(rows=3, cols=2,
+                                     vertical_spacing=0.2,
+                                     specs=[
+                                         [{}, {}],
+                                         [{"rowspan": 2, "colspan": 2}, None],
+                                         [None, None]
+                                     ],
+                                     subplot_titles=("Signal 1", "Signal 2", "Filtered Signal 1", "Filtered Signal 2"))
 
-        data = go.Scatter(
-            x=list(times),
-            y=list(data_dict[data_name]),
-            name='Scatter',
-            fill="tozeroy",
-            fillcolor="#6897bb"
-            )
-
-        graphs.append(html.Div(dcc.Graph(
-            id=data_name,
-            animate=True,
-            figure={'data': [data],'layout' : go.Layout(xaxis=dict(range=[min(times),max(times)]),
-                                                        yaxis=dict(range=[min(data_dict[data_name]),max(data_dict[data_name])]),
-                                                        margin={'l':50,'r':1,'t':45,'b':1},
-                                                        title='{}'.format(data_name))}
-            ), className=class_choice))
-
-    return graphs
-
-
+    fig.append_trace({'x': data.index.values, 'y': data['signal_1']}, 1, 1)
+    fig.append_trace({'x': data.index.values, 'y': data['signal_2']}, 1, 2)
+    fig.append_trace({'x': data.index.values, 'y': data['filtered_signal_1']}, 2, 1)
+    fig.append_trace({'x': data.index.values, 'y': data['filtered_signal_2']}, 2, 1)
+    return fig
 
 
 if __name__ == '__main__':
-    app.run_server(mode='external', port = 8069, dev_tools_ui=True, dev_tools_hot_reload =True, threaded=True)
+    app.run_server(debug=False)
 
 
