@@ -31,7 +31,10 @@ class input_buffer():
         :param input_2: signal from beam breaker sensor
         '''
 
-
+        #_data = pd.DataFrame({input_1, input_2}, index=[0])
+        #_norm = (_data - self.buffer.buffer.mean())/(self.buffer.buffer.std())
+        #
+        #self.buffer.append(a)
 
         if self.index == self.buff_len:
             self.buffer.drop([0], inplace=True)
@@ -71,7 +74,4 @@ class input_buffer():
 
         self.buffer['filtered_signal_1'] = zb1
         self.buffer['filtered_signal_2'] = zb2
-
-
-
 
