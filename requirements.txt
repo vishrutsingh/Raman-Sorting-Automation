@@ -1,0 +1,7 @@
+pandas
+numpy
+scipy
+dash
+dash_html_components
+plotly
+tables
