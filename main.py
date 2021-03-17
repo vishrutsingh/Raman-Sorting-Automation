@@ -21,6 +21,8 @@ df = df.apply(pd.to_numeric)
 buffer = data_processing.input_buffer(buff_len)
 
 
+#TODO: complete readme
+
 if __name__ == "__main__":
    while True:
       '''

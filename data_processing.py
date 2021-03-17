@@ -75,3 +75,7 @@ class input_buffer():
         self.buffer['filtered_signal_1'] = zb1
         self.buffer['filtered_signal_2'] = zb2
 
+
+#TODO: min max normalize buffer
+# add peak detection functionality
+# add standard deviaton class for transit time
