@@ -1,6 +1,8 @@
 import dash
+import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_core_components as dcc
+from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 import pandas as pd
@@ -21,52 +23,43 @@ def open_browser():
 
 
 app = dash.Dash(__name__,
-                update_title=None)
+                update_title=None, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-app.layout = html.Div([
-    html.Div([
+app.layout = dbc.Container(
+    [
         html.Img(src=app.get_asset_url('UofGSoE.PNG')),
-        html.Div(children='RAMAN Sorting Automation',
-                 style={'textAlign': 'left',
+        html.Div(['RAMAN Sorting Automation'],
+                 style={#'float': 'left',
                         'color': '#003560',     #UofG color code
                         'font-size': '40px',
-                        'margin-left': '20px'},)
-    ], className='banner'),
-    html.Div([
-        html.Div(children='Sensor Values',
-                 style={'textAlign': 'center',
-                        'font-size': '20px',
-                        'margin-left': '20px'}),
-        dcc.Graph(id='fig1')
-    ]),
-    html.Div([
-        html.Div(children='Processed Data',
-                 style={'textAlign': 'center',
-                        'font-size': '20px',
-                        'margin-left': '20px'}),
-        dcc.Graph(id='fig2')
-    ]),
-    dcc.Interval(
-        id='interval-component',
-        interval=1000,
-        n_intervals=0)
-], className='row')
+                        'margin-left': '20px',
+                        'display': 'inline-block'}),
+        html.Hr(),
+        html.Div([dcc.Graph(id='fig1'), dcc.Graph(id='fig2')]),
+        dcc.Interval(
+            id='interval-component',
+            interval=1000,
+            n_intervals=0)
+    ]
+)
 
 
 @app.callback(
-    [dash.dependencies.Output('fig1', 'figure'),
-     dash.dependencies.Output('fig2', 'figure')],
-    [dash.dependencies.Input('interval-component', 'n_intervals')],
+    [Output('fig1', 'figure'),
+     Output('fig2', 'figure')],
+    [Input('interval-component', 'n_intervals')],
 )
 def update_graph(n):
     data = update_data()
     sensor_data = make_subplots(rows=1, cols=2,
-                                     vertical_spacing=0.2,
-                                     specs=[
-                                         [{}, {}]
-                                     ],
-                                     subplot_titles=("Signal from 3D chamber (V)", "Signal from beam-break sensor (V)"))
-
+                                vertical_spacing=0.2,
+                                specs=[
+                                    [{}, {}]
+                                ],
+                                subplot_titles=("Signal from 3D chamber (V)", "Signal from beam-break sensor (V)"),
+                                x_title='Time (ms)',
+                                y_title='Voltage (v)',
+                                )
     sensor_data.append_trace({'x': data.index.values, 'y': data['signal_1']}, 1, 1)
     sensor_data.append_trace({'x': data.index.values, 'y': data['signal_2']}, 1, 2)
 
@@ -80,7 +73,7 @@ def update_graph(n):
         layout=go.Layout(
             title='Proccessed Data',
             xaxis={'title': 'Time (ms)'},
-            yaxis={'title': 'Strength'}
+            yaxis={'title': 'Strength'},
         )
     )
     return [sensor_data, processed_data]

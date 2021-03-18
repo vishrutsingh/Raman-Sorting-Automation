@@ -5,3 +5,4 @@ dash
 dash_html_components
 plotly
 tables
+dash_bootstrap_components
