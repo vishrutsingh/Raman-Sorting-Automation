@@ -7,7 +7,7 @@ The goal of this project is to have a control system for the Raman Sorting Proec
 
 Solarized dark             |  Solarized Ocean
 :-------------------------:|:-------------------------:
-![Dashboard](assets/apparatus.PNG =300px)  |  ![Dashboard](assets/screen-capture.gif=100x20 =300px)
+![Dashboard](assets/apparatus.PNG=300px)  |  ![Dashboard](assets/screen-capture.gif=100x20=300px)
 
 ## Getting Started
 
