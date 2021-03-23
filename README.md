@@ -1,11 +1,13 @@
 # Raman Sorting Automation using Raspberry Pi(4)
-
-The goal of this project is to have a control system for the Raman Sorting Proecess.
-![Dashboard](assets/screen-capture.gif)
+![Dashboard](assets/PXL_20210318_084712002.jpg)
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+The goal of this project is to have a control system for the Raman Sorting Proecess.
+
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![Dashboard](assets/apparatus.PNG =300px)  |  ![Dashboard](assets/screen-capture.gif=100x20 =300px)
 
 ## Getting Started
 
