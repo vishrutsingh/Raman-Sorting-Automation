@@ -8,14 +8,21 @@ import plotly.graph_objs as go
 import pandas as pd
 import webbrowser
 from threading import Timer
+import feather
+import main
+import numpy as np
 
 
 #port
 port = 8050
 
 
+
 def update_data():
-    return pd.read_hdf('data/store.h5', 'df', mode='r')
+    #return feather.read_dataframe('data/buffer.feather', use_threads=True, memory_map=True)
+    #return pd.read_feather('data/buffer.feather')
+    return pd.read_pickle('data/buffer.pkl')
+
 
 def open_browser():
     webbrowser.open_new("http://localhost:{}".format(port))
